@@ -1,3 +1,8 @@
+[travis-ci.org](http://www.travis-ci.org)<br/>
+[![Build Status](https://travis-ci.org/peterarsentev/code_quality_principles.svg?branch=master)](https://travis-ci.org/peterarsentev/code_quality_principles)
+
+
+
 Code quality principles.
 ========================
 
