@@ -10,6 +10,8 @@
 apply plugin: 'java'
 apply plugin: 'checkstyle'
 
+sourceCompatibility = 1.8
+
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.

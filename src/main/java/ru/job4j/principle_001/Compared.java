@@ -1,7 +1,7 @@
 package ru.job4j.principle_001;
 
 /**
- * //TODO add comments.
+ * Simple example of multiple return statements.
  *
  * @author Petr Arsentev (parsentev@yandex.ru)
  * @version $Id$
