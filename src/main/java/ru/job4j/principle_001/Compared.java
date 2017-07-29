@@ -9,7 +9,7 @@ package ru.job4j.principle_001;
  */
 public class Compared {
     /**
-     * Return mex of left and right
+     * Return mex of left and right.
      * @param left left.
      * @param right right.
      * @return max of left, right.
@@ -23,7 +23,7 @@ public class Compared {
     }
 
     /**
-     * Return mex of left and right
+     * Return mex of left and right.
      * @param left left.
      * @param right right.
      * @return max of left, right.

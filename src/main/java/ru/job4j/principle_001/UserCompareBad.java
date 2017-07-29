@@ -6,10 +6,10 @@ import java.util.Comparator;
  * Bad example.
  *
  * List of problems
- * 1. Multi returns.
- * 2. Multi conditions (if-else-if).
+ * 1. Multi returns statements.
+ * 2. Multi conditions statements (if-else-if).
  * 3. Unnecessary auto-boxing.
- * 4. Unnecessary auto-boxing.
+ * 4. Unnecessary calculating.
  * 5. Explicitly return result.
  *
  * @author Petr Arsentev (parsentev@yandex.ru)
@@ -19,7 +19,7 @@ import java.util.Comparator;
 public class UserCompareBad implements Comparator<User> {
 
     /**
-     * ${@inheritDoc}
+     * ${@inheritDoc}.
      */
     @Override
     public int compare(User left, User right) {
@@ -27,12 +27,12 @@ public class UserCompareBad implements Comparator<User> {
             return 1;
         } else if (left.name().compareTo(right.name()) == -1) {
             return -1;
-        } else if (Integer.valueOf(left.age()) > Integer.valueOf(right.age()) &&
-                left.name().compareTo(right.name()) == 0) {
+        } else if (Integer.valueOf(left.age()) > Integer.valueOf(right.age())
+                && left.name().compareTo(right.name()) == 0) {
             return 1;
         } else if (
-                Integer.valueOf(left.age()) < Integer.valueOf(right.age()) &&
-                        left.name().compareTo(right.name()) == 0
+                Integer.valueOf(left.age()) < Integer.valueOf(right.age())
+                        && left.name().compareTo(right.name()) == 0
                 ) {
             return -1;
         } else {

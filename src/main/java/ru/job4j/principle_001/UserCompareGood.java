@@ -12,7 +12,7 @@ import java.util.Comparator;
 public class UserCompareGood implements Comparator<User> {
 
     /**
-     * ${@inheritDoc}
+     * ${@inheritDoc}.
      */
     @Override
     public int compare(final User left, final User right) {

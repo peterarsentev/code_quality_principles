@@ -4,7 +4,7 @@ Code quality principles.
 The project contains principles, which improve code quality.
 
 Below, you can find list of principles. 
-Each principles has examples of bad and good code snippet with explanations.
+Each principles has examples of bad and good code snippets with explanations.
 
 Contribute
 ----------
@@ -15,9 +15,9 @@ If you have any questions, feel free to contact me. Skype : petrarsentev
 List of principles.
 -------------------
 
-1. Multiple return.
+1. Multiple return statements.
 
-All methods must have only one return. It should be at the end of method.
+All methods must have only an one return statement. It should be at the end of method.
 
 Bad code.
 
