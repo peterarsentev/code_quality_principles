@@ -1,5 +1,5 @@
 /**
- * //TODO add comments.
+ * Contains examples with multi return statements.
  *
  * @author Petr Arsentev (parsentev@yandex.ru)
  * @version $Id$
