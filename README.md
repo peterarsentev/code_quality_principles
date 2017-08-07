@@ -20,7 +20,7 @@ If you have any questions, feel free to contact me. Skype : petrarsentev
 List of principles.
 -------------------
 
-1. Multiple return statements.
+#### 1. Multiple return statements
 
 All methods must have only an one return statement. It should be at the end of method.
 
@@ -40,7 +40,7 @@ Good code.
         return left > right ? left : right;
     }
     
-2. Dispatch pattern instead of multiple if statements and switch anti-pattern.
+#### 2. Dispatch pattern instead of multiple if statements and switch anti-pattern.
 
 Every time, when you see code like this below, replace it to dispatch pattern.
 
