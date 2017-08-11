@@ -162,6 +162,145 @@ Dispatch pattern.
         }
     }
 
-The main benefit of distpatch pattern:
+The main benefit of dispatch pattern:
 1. All codes are splitted on independent small methods.
 2. Flexible extension.
+
+Example.
+
+Let's consider situation, when we need to calculate permission for person by age.
+
+Here, We have non strict values, as it is on above example. 
+It need to check a predict in order to execute a handler. 
+It can be done only by loop, so such method works by O(n), not like example above (O(1)).
+Actually, I don't know how to change this methods in order to it works by O(1). 
+I will be glad to hear a such solution from you.
+
+
+Permission table.
+
+    < 14 - forbidden.
+    >= 14 and < 18 - limit access.
+    > 18 - free.
+
+Full code.
+
+1. Created a dispatch container.
+
+
+    import java.util.LinkedHashMap;
+    import java.util.function.Function;
+
+    /**
+     * Dispatch pattern for diapason key.
+     *
+     * @author Petr Arsentev (parsentev@yandex.ru)
+     * @version $Id$
+     * @since 0.1
+     */
+    public class DispatchDiapason {
+        /**
+         * Dispatch.
+         */
+        private final LinkedHashMap<Function<Person, Boolean>, Function<Person, Person.Access>> dispatch = new LinkedHashMap<>();
+    
+        /**
+         * Load initial handlers.
+         * @return current object.
+         */
+        public DispatchDiapason init() {
+            this.dispatch.put(
+                    person -> person.age() < 14,
+                    person -> Person.Access.FORBIDDEN
+            );
+            this.dispatch.put(
+                    person -> person.age() >= 14 && person.age() < 18,
+                    person -> Person.Access.LIMIT
+            );
+            this.dispatch.put(
+                    person -> person.age() >= 18,
+                    person -> Person.Access.FREE
+            );
+            return this;
+        }
+    
+        /**
+         * Load handler and predict.
+         * @param predict Predict.
+         * @param handle Handle.
+         */
+        public void load(Function<Person, Boolean> predict, Function<Person, Person.Access> handle) {
+            this.dispatch.put(predict, handle);
+        }
+    
+        /**
+         * Chech access for person by age.
+         * @param person Person
+         * @return true if access are allowed
+         */
+        public Person.Access access(Person person) {
+            for (Function<Person, Boolean> predict : this.dispatch.keySet()) {
+                if (predict.apply(person)) {
+                    return this.dispatch.get(predict).apply(person);
+                }
+            }
+            throw new IllegalStateException("Could not found a handle for person");
+        }
+    }
+    
+2. Created the tests.
+
+
+    import org.junit.Test;
+    import static org.hamcrest.core.Is.is;
+    import static org.junit.Assert.assertThat;
+    
+    /**
+     * Test for person permission  by age.
+     *
+     * @author Petr Arsentev (parsentev@yandex.ru)
+     * @version $Id$
+     * @since 0.1
+     */
+    public class DispatchDiapasonTest {
+    
+        /**
+         * Between 14 and 18.
+         */
+        @Test
+        public void whenBetween14and18ThenLimited() {
+           assertThat(
+                   new DispatchDiapason().init().access(
+                           () -> 16
+                   ),
+                   is(Person.Access.LIMIT)
+           );
+        }
+    
+        /**
+         * Up 18 age.
+         */
+        @Test
+        public void whenUp18AgeThenFree() {
+            assertThat(
+                    new DispatchDiapason().init().access(
+                            () -> 21
+                    ),
+                    is(Person.Access.FREE)
+            );
+        }
+    
+        /**
+         * Under 14 age.
+         */
+        @Test
+        public void whenLess14ThenForbidden() {
+            assertThat(
+                    new DispatchDiapason().init().access(
+                            () -> 10
+                    ),
+                    is(Person.Access.FORBIDDEN)
+            );
+        }
+    }
+

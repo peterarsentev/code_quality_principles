@@ -1,7 +1,6 @@
 package ru.job4j.principle_002;
 
 import org.junit.Test;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
