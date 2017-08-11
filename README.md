@@ -185,9 +185,6 @@ Permission table.
 
 Full code.
 
-1. Created a dispatch container.
-
-
     import java.util.LinkedHashMap;
     import java.util.function.Function;
 
@@ -248,9 +245,6 @@ Full code.
         }
     }
     
-2. Created the tests.
-
-
     import org.junit.Test;
     import static org.hamcrest.core.Is.is;
     import static org.junit.Assert.assertThat;
