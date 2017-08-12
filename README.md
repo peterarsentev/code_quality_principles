@@ -231,7 +231,7 @@ Full code.
         }
     
         /**
-         * Chech access for person by age.
+         * Check access for person by age.
          * @param person Person
          * @return true if access are allowed
          */
