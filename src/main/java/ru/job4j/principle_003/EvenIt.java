@@ -2,13 +2,26 @@ package ru.job4j.principle_003;
 
 import java.util.Iterator;
 
+/**
+ * Iterator for even numbers.
+ */
 public class EvenIt implements Iterable<Integer> {
+    /**
+     * Array of numbers.
+     */
     private final int[] data;
 
+    /**
+     * Default constructor.
+     * @param data numbers.
+     */
     public EvenIt(final int[] data) {
         this.data = data;
     }
 
+    /**
+     * ${@inheritDoc}.
+     */
     @Override
     public Iterator<Integer> iterator() {
 
@@ -31,6 +44,11 @@ public class EvenIt implements Iterable<Integer> {
         };
     }
 
+    /**
+     * Find event by positions.
+     * @param start position of searching.
+     * @return return the new position.
+     */
     private int findEven(final int start) {
         int rst = -1;
         for (int index = start; index != this.data.length; index++) {
