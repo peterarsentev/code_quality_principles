@@ -17,8 +17,11 @@ Contribute
 I will appreciate, if you share challenges code snippets or add other useful principles with examples.
 If you have any questions, feel free to contact me. Skype : petrarsentev
 
-List of principles.
+Content
 -------------------
+1. Multiple return statements
+2. Multiple if statements and switch anti-pattern
+3. If-else-throw statements
 
 #### 1. Multiple return statements
 
@@ -298,3 +301,156 @@ Full code.
         }
     }
 
+### 3. If-else-throw statements.
+
+Let's consider the follows code. We need to implement the iterator for even numbers.
+
+    package ru.job4j.principle_003;
+
+    import java.util.Iterator;
+    
+    public class EvenIt implements Iterable<Integer> {
+        private final int[] data;
+    
+        public EvenIt(final int[] data) {
+            this.data = data;
+        }
+    
+        @Override
+        public Iterator<Integer> iterator() {
+    
+            return new Iterator<Integer>() {
+                private int point;
+    
+                @Override
+                public boolean hasNext() {
+                    return EvenIt.this.findEven(this.point) >= 0;
+                }
+    
+                @Override
+                public Integer next() {
+                    if (this.hasNext()) {
+                        this.point = EvenIt.this.findEven(this.point);
+                        return EvenIt.this.data[this.point++];
+                    } else {
+                        throw new IllegalStateException("No such element.");
+                    }
+                }
+        }
+    
+        private int findEven(final int start) {
+            int rst = -1;
+            for (int index = start; index != this.data.length; index++) {
+                if (this.data[index] % 2 == 0) {
+                    rst = index;
+                    break;
+                }
+            }
+            return rst;
+        }
+    }
+
+Let's focus of this snippet.
+
+    @Override
+    public Integer next() {
+        if (this.hasNext()) {
+            this.point = EvenIt.this.findEven(this.point);
+            return EvenIt.this.data[this.point++];
+        } else {
+            throw new IllegalStateException("No such element.");
+        }
+    }
+
+This short code looks good, but it can be improved by removing else statement.
+
+    if (!this.hasNext()) {
+        throw new IllegalStateException("No such element.");
+    } 
+    this.point = EvenIt.this.findEven(this.point);
+    return EvenIt.this.data[this.point++];
+    
+The main differents from this two snippets is splitting the validation part and main logic part.
+Right now, we have two independents parts of code.
+
+Let's consider more complex situation.
+
+We need to validate the users input by few conditions.
+
+We can do by this one:
+
+    public class Credential {
+        boolean hasAccess(final User user) {
+            if (this.checkName(user)) {
+                if (this.checkSurname(user)) {
+                    if (this.checkBalance(user)) {
+                        return true;
+                    } else {
+                        throw new IllegalStateException("Wrong balance.");
+                    }
+                } else {
+                    throw new IllegalStateException("Wrong surname.");
+                }
+            } else {
+                throw new IllegalStateException("Wrong name.");
+            }
+        }
+    
+        private boolean checkBalance(User user) {
+            return false;
+        }
+    
+        private boolean checkSurname(User user) {
+            return false;
+        }
+    
+        private boolean checkName(User user) {
+            return false;
+        }
+    }
+    
+if we need to add more conditions, we should add more inner if else blocks.
+This code will be difficult to read and maintenance. 
+
+Let's make the refactoring.
+
+First, split the validations part and logic part.
+
+    boolean hasAccess(final User user) {
+    if (!this.checkName(user)) {
+        throw new IllegalStateException("Wrong name.");
+    }
+    if (!this.checkSurname(user)) {
+        throw new IllegalStateException("Wrong surname.");
+    }
+    if (!this.checkBalance(user)) {
+        throw new IllegalStateException("Wrong balance.");
+    }
+    return true;
+
+Then, we need to replace multiple if statements to dispatch pattern.
+
+    private final List<Consumer<User>> validates = Arrays.asList(   
+            user -> {
+                if (!this.checkName(user)) {
+                    throw new IllegalStateException("Wrong name.");
+                }
+            },
+            user -> {
+                if (!this.checkSurname(user)) {
+                    throw new IllegalStateException("Wrong surname.");
+                }
+            },
+            user -> {
+                if (!this.checkBalance(user)) {
+                    throw new IllegalStateException("Wrong balance.");
+                }
+            }
+    );
+
+    boolean hasAccess(final User user) {
+        this.validates.forEach(action -> action.accept(user));
+        return true;
+    }
+
+       
