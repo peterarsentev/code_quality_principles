@@ -9,9 +9,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Storage with copy past anti pattern.
+ */
 public class DbStoreCopyPast implements Store<User> {
+    /**
+     * db source.
+     */
     private final BasicDataSource source;
 
+    /**
+     * Constructor.
+     * @param source db source.
+     */
     public DbStoreCopyPast(BasicDataSource source) {
         this.source = source;
     }

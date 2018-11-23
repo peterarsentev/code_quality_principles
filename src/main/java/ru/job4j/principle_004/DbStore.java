@@ -2,32 +2,64 @@ package ru.job4j.principle_004;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Optional;
 
+/**
+ * Refactoring store.
+ */
 public class DbStore implements Store<User> {
+    /**
+     * Db source.
+     */
     private final BasicDataSource source;
+
+    /**
+     * Dispatch param for prepared statement.
+     */
     private final Map<Class<?>, TripleConEx<Integer, PreparedStatement, Object>> dispatch = new HashMap<>();
 
+    /**
+     * Constructor.
+     * @param source DB source.
+     */
     public DbStore(BasicDataSource source) {
         this.source = source;
         this.dispatch.put(Integer.class, (index, ps, value) ->  ps.setInt(index, (Integer) value));
         this.dispatch.put(String.class, (index, ps, value) ->  ps.setString(index, (String) value));
     }
 
+    /**
+     * For-each statement with index.
+     * @param list list.
+     * @param consumer consumer.
+     * @param <T> type.
+     * @throws Exception possible exception.
+     */
     private <T> void forIndex(List<T> list, BiConEx<Integer, T> consumer) throws Exception {
         for (int index = 0; index != list.size(); index++) {
             consumer.accept(index, list.get(index));
         }
     }
 
+    /**
+     * Wrapper with prepared statement.
+     * @param sql query
+     * @param params params
+     * @param fun function with prepared statement.
+     * @param key for generating key.
+     * @param <R> type
+     * @return value.
+     */
     private <R> Optional<R> db(String sql, List<Object> params, FunEx<PreparedStatement, R> fun, int key) {
         Optional<R> rst = Optional.empty();
-        try (final PreparedStatement pr = this.source.getConnection()
-                .prepareStatement(sql, key)) {
+        try (var pr = this.source.getConnection().prepareStatement(sql, key)) {
             this.forIndex(
                     params,
                     (index, value) -> dispatch.get(value.getClass()).accept(index + 1, pr, value)
@@ -38,10 +70,27 @@ public class DbStore implements Store<User> {
         }
         return rst;
     }
+
+    /**
+     * Overload without key.
+     * @param sql query.
+     * @param params params.
+     * @param fun function with prepared statement.
+     * @param <R> type.
+     * @return value.
+     */
     private <R> Optional<R> db(String sql, List<Object> params, FunEx<PreparedStatement, R> fun) {
         return this.db(sql, params, fun, Statement.NO_GENERATED_KEYS);
     }
 
+    /**
+     * The same like DB only without return value.
+     * @param sql query.
+     * @param params params.
+     * @param fun function with prepared statement.
+     * @param key generated key.
+     * @param <R> type.
+     */
     private <R> void db(String sql, List<Object> params, ConEx<PreparedStatement> fun, int key) {
         this.db(
                 sql, params,
@@ -52,6 +101,13 @@ public class DbStore implements Store<User> {
         );
     }
 
+    /**
+     * The same like DB only without return value.
+     * @param sql query.
+     * @param params params.
+     * @param fun funcation with prepared statement.
+     * @param <R> type.
+     */
     private <R> void db(String sql, List<Object> params, ConEx<PreparedStatement> fun) {
         this.db(sql, params, fun, Statement.NO_GENERATED_KEYS);
     }
@@ -94,7 +150,9 @@ public class DbStore implements Store<User> {
         this.db(
                 "update users set login=? where id=?",
                 List.of(model.getLogin(), model.getId()),
-                ps -> { ps.executeUpdate(); }
+                ps -> {
+                    ps.executeUpdate();
+                }
         );
     }
 
@@ -102,7 +160,9 @@ public class DbStore implements Store<User> {
     public void delete(int id) {
         this.db(
                 "delete users where id=?", List.of(id),
-                ps -> { ps.executeUpdate(); }
+                ps -> {
+                    ps.executeUpdate();
+                }
         );
     }
 

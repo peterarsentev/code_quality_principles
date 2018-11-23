@@ -10,8 +10,15 @@ import java.sql.SQLException;
 import java.util.Properties;
 import static org.hamcrest.core.IsNot.not;
 
+/**
+ * Integration tests.
+ */
 public class DbStoreTest {
 
+    /**
+     * Build db course.
+     * @param con consumer.
+     */
     private void source(ConEx<BasicDataSource> con) {
         BasicDataSource source = new BasicDataSource();
         try {
@@ -38,6 +45,9 @@ public class DbStoreTest {
         }
     }
 
+    /**
+     * Test. Adding user.
+     */
     @Test
     public void whenAddUserThenGenerateId() {
         this.source(
