@@ -14,4 +14,4 @@ before_script:
 
 script:
  - ./gradlew task travis update
- - ./gradlew build --scan -s
+ - ./gradlew build
