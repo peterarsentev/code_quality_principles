@@ -13,5 +13,5 @@ before_script:
  - psql -c 'create database users;' -U postgres
 
 script:
- - ./gradlew task travic update
+ - ./gradlew task travis update
  - ./gradlew build --scan -s
