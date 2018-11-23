@@ -2,3 +2,13 @@ language: java
 
 before_install:
  - chmod +x gradlew
+
+services:
+ - postgresql
+
+before_script:
+ - psql -c 'create database users;' -U postgres
+
+script:
+ - ./gradlew task travic update
+ - ./gradlew build --scan -s

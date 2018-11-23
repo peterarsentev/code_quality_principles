@@ -380,10 +380,10 @@ We need to validate the users input by few conditions.
 We can do by this one:
 
     public class Credential {
-        boolean hasAccess(final User user) {
-            if (this.checkName(user)) {
-                if (this.checkSurname(user)) {
-                    if (this.checkBalance(user)) {
+        boolean hasAccess(final User login) {
+            if (this.checkName(login)) {
+                if (this.checkSurname(login)) {
+                    if (this.checkBalance(login)) {
                         return true;
                     } else {
                         throw new IllegalStateException("Wrong balance.");
@@ -396,15 +396,15 @@ We can do by this one:
             }
         }
     
-        private boolean checkBalance(User user) {
+        private boolean checkBalance(User login) {
             return false;
         }
     
-        private boolean checkSurname(User user) {
+        private boolean checkSurname(User login) {
             return false;
         }
     
-        private boolean checkName(User user) {
+        private boolean checkName(User login) {
             return false;
         }
     }
@@ -416,14 +416,14 @@ Let's make the refactoring.
 
 First, split the validations part and logic part.
 
-    boolean hasAccess(final User user) {
-    if (!this.checkName(user)) {
+    boolean hasAccess(final User login) {
+    if (!this.checkName(login)) {
         throw new IllegalStateException("Wrong name.");
     }
-    if (!this.checkSurname(user)) {
+    if (!this.checkSurname(login)) {
         throw new IllegalStateException("Wrong surname.");
     }
-    if (!this.checkBalance(user)) {
+    if (!this.checkBalance(login)) {
         throw new IllegalStateException("Wrong balance.");
     }
     return true;
@@ -431,25 +431,25 @@ First, split the validations part and logic part.
 Then, we need to replace multiple if statements to dispatch pattern.
 
     private final List<Consumer<User>> validates = Arrays.asList(   
-            user -> {
-                if (!this.checkName(user)) {
+            login -> {
+                if (!this.checkName(login)) {
                     throw new IllegalStateException("Wrong name.");
                 }
             },
-            user -> {
-                if (!this.checkSurname(user)) {
+            login -> {
+                if (!this.checkSurname(login)) {
                     throw new IllegalStateException("Wrong surname.");
                 }
             },
-            user -> {
-                if (!this.checkBalance(user)) {
+            login -> {
+                if (!this.checkBalance(login)) {
                     throw new IllegalStateException("Wrong balance.");
                 }
             }
     );
 
-    boolean hasAccess(final User user) {
-        this.validates.forEach(action -> action.accept(user));
+    boolean hasAccess(final User login) {
+        this.validates.forEach(action -> action.accept(login));
         return true;
     }
 

@@ -27,8 +27,8 @@ public class EvenItTest {
         assertThat(
                 new EvenIt(
                         new int[] {1, 2}
-                ).iterator().next()
-                , is(2)
+                ).iterator().next(),
+                is(2)
         );
     }
 }
