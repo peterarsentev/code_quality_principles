@@ -453,4 +453,108 @@ Then, we need to replace multiple if statements to dispatch pattern.
         return true;
     }
 
+ ### 4. Don't use exceptions. Exceptions make your code ugly.
+
+Frequently, my students ask me question about exception. Why do we need it or how to use it?
+If you asked me such question, before I have written about this principle I would tell you follows:
+Exception is used when you need to notify clients about unordinary situation in code. 
+Generally, We just rethrow this exception or print it to console. We don't try to handle it.
+
+If we had had such behavior in real life it would be ridiculous. Let's consider you need a taxi. 
+When the taxi comes, a driver tells you that you need to take repair tools, 
+because a car may break on road and you have to fix it. It is the same situation, 
+when you use code, which throw exceptions.
+
+Now I would like to propagate a new idea about exception.
+
+Let's consider the follow common interface.
+ 
+     public interface ExtResource<T> {
+     
+         T read(String name) throws Exception;
+     
+         void write(T value) throws Exception;
+     } 
+  
+Such interface allows you to read and write a resource to external system. 
+Each method may throw exception and you need to handle it.
+We use try-catch statements for handling exception. 
+Such code start to look ugly.
+
+    public void writeToFile(T value, ExtResource<T> resource) {
+        try {
+            resource.write(value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }           
+    
+This is a primitive sample. Look at more real example:
+
+    public void update(User user) {
+        try (final PreparedStatement ps = this.source.getConnection()
+                .prepareStatement("update users set login=? where id=?")) {
+            ps.setString(1, user.getLogin());
+            ps.setInt(2, user.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+You start to make you code in copy-past style.
+
+My idea is to get rid of any exceptions by lambla expression.
+
+Let's create function interface with can do unary operation.
+
+    public interface UnaryEx {
        
+        void action() throws Exception;
+    }
+
+Now we need to create method, which catch exception and print it to console. 
+
+    void ex(UnaryEx unary) {
+        try {
+            unary.action();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+Now, we can rewrite about code without try-catch statement.
+
+    /**
+     * Read resource without exception.
+     * @param name name.
+     * @param resource resource.
+     */
+    public void read(String name, ExtResource<T> resource) {
+        ex(() -> resource.read(name));
+    }
+
+    /**
+     * Write resource without exception.
+     * @param value value.
+     * @param resource resources.
+     */
+    public void write(T value, ExtResource<T> resource) {
+        ex(() -> resource.write(value));
+    }
+    
+How you can see, we don't have copy/past code now. 
+
+Look at sample with JDBC method.
+
+    public void update(User model) {
+        this.db(
+                "update users set login=? where id=?",
+                List.of(model.getLogin(), model.getId()),
+                ps -> {
+                    ps.executeUpdate();
+                }
+        );
+    }
+
+This code is clean and clear.    

@@ -29,7 +29,7 @@ public class DbStoreCopyPast implements Store<User> {
     @Override
     public User add(User user) {
         try (final PreparedStatement statement = this.source.getConnection()
-                .prepareStatement("insert into client (name) values (?)", Statement.RETURN_GENERATED_KEYS)) {
+                .prepareStatement("insert into users (login) values (?)", Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getLogin());
             statement.executeUpdate();
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
@@ -51,7 +51,7 @@ public class DbStoreCopyPast implements Store<User> {
                 .prepareStatement("select * from users");
              final ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                users.add(new User(rs.getInt("uid"), rs.getString("name")));
+                users.add(new User(rs.getInt("id"), rs.getString("login")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,8 +60,15 @@ public class DbStoreCopyPast implements Store<User> {
     }
 
     @Override
-    public void update(User model) {
-
+    public void update(User user) {
+        try (final PreparedStatement ps = this.source.getConnection()
+                .prepareStatement("update users set login=? where id=?")) {
+            ps.setString(1, user.getLogin());
+            ps.setString(2, user.getLogin());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -70,6 +77,18 @@ public class DbStoreCopyPast implements Store<User> {
 
     @Override
     public User findById(int id) {
-        return null;
+        User rsl = new User();
+        try (final PreparedStatement ps = this.source.getConnection()
+                .prepareStatement("select * from users where id=?")) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    rsl = new User(rs.getInt("id"), rs.getString("login"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rsl;
     }
 }
