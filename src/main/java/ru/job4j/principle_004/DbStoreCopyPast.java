@@ -2,10 +2,7 @@ package ru.job4j.principle_004;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +25,8 @@ public class DbStoreCopyPast implements Store<User> {
 
     @Override
     public User add(User user) {
-        try (final PreparedStatement statement = this.source.getConnection()
+        try (Connection connection = this.source.getConnection();
+             final PreparedStatement statement = connection
                 .prepareStatement("insert into users (login) values (?)", Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getLogin());
             statement.executeUpdate();
