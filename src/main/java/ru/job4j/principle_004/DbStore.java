@@ -59,7 +59,8 @@ public class DbStore implements Store<User> {
      */
     private <R> Optional<R> db(String sql, List<Object> params, FunEx<PreparedStatement, R> fun, int key) {
         Optional<R> rst = Optional.empty();
-        try (var pr = this.source.getConnection().prepareStatement(sql, key)) {
+        try (var connection = this.source.getConnection();
+             var pr = connection.prepareStatement(sql, key)) {
             this.forIndex(
                     params,
                     (index, value) -> dispatch.get(value.getClass()).accept(index + 1, pr, value)

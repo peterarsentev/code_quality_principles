@@ -2,6 +2,8 @@ package ru.job4j.principle_004;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +22,7 @@ public class DbStoreTest {
      * @param con consumer.
      */
     private void source(ConEx<BasicDataSource> con) {
-        BasicDataSource source = new BasicDataSource();
+        BasicDataSource source = new PoolRollback();
         try {
             Properties settings = new Properties();
             try (InputStream in = new FileInputStream(new File("./gradle.properties"))) {
@@ -43,6 +45,22 @@ public class DbStoreTest {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Check that table is empty.
+     */
+    @Test
+    public void whenReadsThenTableEmpty() {
+        this.source(
+                source -> {
+                    DbStore store = new DbStore(source);
+                    assertThat(
+                            store.findAll().isEmpty(),
+                            is(true)
+                    );
+                }
+        );
     }
 
     /**
