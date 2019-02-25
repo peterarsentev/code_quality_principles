@@ -27,7 +27,8 @@ public class DbStoreCopyPast implements Store<User> {
     public User add(User user) {
         try (Connection connection = this.source.getConnection();
              final PreparedStatement statement = connection
-                .prepareStatement("insert into users (login) values (?)", Statement.RETURN_GENERATED_KEYS)) {
+                .prepareStatement("insert into users (login) values (?)",
+                        Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getLogin());
             statement.executeUpdate();
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
