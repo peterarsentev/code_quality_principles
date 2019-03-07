@@ -2,7 +2,13 @@ package ru.job4j.principle_003;
 
 import java.util.Map;
 
+/**
+ * Validate service impl.
+ */
 public enum ValidateService implements Validate {
+    /**
+     * Impl singleton.
+     */
     INSTANCE;
 
     @Override
