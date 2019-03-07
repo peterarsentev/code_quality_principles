@@ -2,7 +2,11 @@ package ru.job4j.principle_004;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +21,7 @@ public class DbStoreCopyPast implements Store<User> {
 
     /**
      * Constructor.
+     *
      * @param source db source.
      */
     public DbStoreCopyPast(BasicDataSource source) {
@@ -27,8 +32,8 @@ public class DbStoreCopyPast implements Store<User> {
     public User add(User user) {
         try (Connection connection = this.source.getConnection();
              final PreparedStatement statement = connection
-                .prepareStatement("insert into users (login) values (?)",
-                        Statement.RETURN_GENERATED_KEYS)) {
+                     .prepareStatement("insert into users (login) values (?)",
+                             Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getLogin());
             statement.executeUpdate();
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
