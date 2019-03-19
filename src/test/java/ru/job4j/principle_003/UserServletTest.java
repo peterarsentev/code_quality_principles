@@ -54,6 +54,6 @@ public class UserServletTest {
         new UserServlet().doPost(req, resp);
         ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);
         verify(validate).add(argument.capture());
-        assertThat("Petr Arsentev", is(argument.getValue().getName()));
+        assertThat(argument.getValue().getName(), is("Petr Arsentev"));
     }
 }

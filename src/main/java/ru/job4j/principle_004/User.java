@@ -1,14 +1,21 @@
 package ru.job4j.principle_004;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 /**
  * User model.
  */
+@Entity(name = "users")
 public class User {
     /**
      * Identification.
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     /**
      * Login.
