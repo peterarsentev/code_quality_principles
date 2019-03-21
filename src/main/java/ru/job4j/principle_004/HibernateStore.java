@@ -73,7 +73,7 @@ public class HibernateStore implements Store<User> {
 
     @Override
     public List<User> findAll() {
-        return tx(session -> session.createQuery("from User").list());
+        return tx(session -> session.createQuery("from users").list());
     }
 
     @Override

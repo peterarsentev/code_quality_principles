@@ -12,6 +12,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Connection, which rollback all commits.
  * It is used for integration test.
+ * @author Petr Arsentev (parsentev@yandex.ru)
  */
 public class ConnectionRollback {
 
@@ -85,6 +86,9 @@ public class ConnectionRollback {
                     if ("beginTransaction".equals(method.getName())) {
                         rsl = mock(Transaction.class);
                     } else if ("close".equals(method.getName())) {
+                        rsl = null;
+                    } else if ("clear".equals(method.getName())) {
+                        session.getTransaction().rollback();
                         rsl = null;
                     } else {
                         rsl = method.invoke(session, args);

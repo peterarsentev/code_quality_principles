@@ -1,5 +1,6 @@
 package ru.job4j.principle_004;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -34,12 +35,15 @@ public class HibernateStoreTest {
     @Test
     public void whenCreateAndFind() {
         SessionFactory factory = create(HibernateFactory.FACTORY);
+        Session session = factory.openSession();
         HibernateStore store = new HibernateStore(factory);
         User user = store.add(new User(-1, "Petr Arsentev"));
         assertThat(
                 store.findById(user.getId()).getLogin(),
                 is("Petr Arsentev")
         );
+        session.clear();
+        assertThat(store.findAll().isEmpty(), is(true));
         factory.close();
     }
 
