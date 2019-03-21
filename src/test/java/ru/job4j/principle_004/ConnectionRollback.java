@@ -86,6 +86,9 @@ public class ConnectionRollback {
                         rsl = mock(Transaction.class);
                     } else if ("close".equals(method.getName())) {
                         rsl = null;
+                    } else if ("clear".equals(method.getName())) {
+                        session.getTransaction().rollback();
+                        rsl = null;
                     } else {
                         rsl = method.invoke(session, args);
                     }
