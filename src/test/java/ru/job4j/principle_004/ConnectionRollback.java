@@ -13,6 +13,7 @@ import static org.mockito.Mockito.mock;
  * Connection, which rollback all commits.
  * It is used for integration test.
  * @author Petr Arsentev (parsentev@yandex.ru)
+ * @since 21.03.2019
  */
 public class ConnectionRollback {
 
