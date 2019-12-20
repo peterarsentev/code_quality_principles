@@ -6,26 +6,25 @@
 Code quality principles.
 ========================
 
-The project contains principles, which improve code quality.
+The project contains principles which could improve a code quality.
 
-Below, you can find list of principles. 
-Each principles has examples of bad and good code snippets with explanations.
+Below you can find list of principles. Each principle has examples of bad and good code snippets with explanations.
 
 Contribute
 ----------
 
-I will appreciate, if you share challenges code snippets or add other useful principles with examples.
+I will appreciate if you share challenges code snippets or add other useful principles with examples.
 If you have any questions, feel free to contact me. Skype : petrarsentev
 
 Content
 -------------------
 1. Multiple return statements
-2. Multiple if statements and switch anti-pattern
+2. Multiple if-statements and switch anti-pattern
 3. If-else-throw statements
 
 #### 1. Multiple return statements
 
-All methods must have only an one return statement. It should be at the end of method.
+All methods must have only one return statement. It should be at the end of a method.
 
 Bad code.
 
@@ -43,11 +42,11 @@ Good code.
         return left > right ? left : right;
     }
     
-#### 2. Dispatch pattern instead of multiple if statements and switch anti-pattern.
+#### 2. Dispatch pattern instead of multiple if-statements and switch anti-pattern.
 
-Every time, when you see code like this below, replace it to dispatch pattern.
+Each time you see a code like this below, replace it to dispatch pattern.
 
-Multiple if statements.
+Multiple if-statements.
 
     public boolean sent(final Message msg) {
         boolean rsl = false;
@@ -166,19 +165,14 @@ Dispatch pattern.
     }
 
 The main benefit of dispatch pattern:
-1. All codes are splitted on independent small methods.
-2. Flexible extension.
+1.	All code is split on independent small methods.
+2.	Flexible extension.
 
-Example.
+An example.
 
-Let's consider situation, when we need to calculate permission for person by age.
+Let's consider a situation, we need to calculate permission for a person by age.
 
-Here, We have non strict values, as it is on above example. 
-It need to check a predict in order to execute a handler. 
-It can be done only by loop, so such method works by O(n), not like example above (O(1)).
-Actually, I don't know how to change this methods in order to it works by O(1). 
-I will be glad to hear a such solution from you.
-
+Here, we have non-strict values, as it is on above example. It needs to check a predict in order to execute a handler. It can be done only by loop, so such method works by O(n), not like example above (O(1)). Actually, I don't know how to change this methods in order to make it work by O(1). I will be glad to hear a such solution from you.
 
 Permission table.
 
@@ -303,7 +297,7 @@ Full code.
 
 ### 3. If-else-throw statements.
 
-Let's consider the follows code. We need to implement the iterator for even numbers.
+Let's consider the following code. We need to implement an iterator for even numbers.
 
     package ru.job4j.principle_003;
 
@@ -350,7 +344,7 @@ Let's consider the follows code. We need to implement the iterator for even numb
         }
     }
 
-Let's focus of this snippet.
+Let's focus on this snippet.
 
     @Override
     public Integer next() {
@@ -362,7 +356,7 @@ Let's focus of this snippet.
         }
     }
 
-This short code looks good, but it can be improved by removing else statement.
+This short code looks good, but it can be improved by removing an else-statement.
 
     if (!this.hasNext()) {
         throw new IllegalStateException("No such element.");
@@ -370,14 +364,13 @@ This short code looks good, but it can be improved by removing else statement.
     this.point = EvenIt.this.findEven(this.point);
     return EvenIt.this.data[this.point++];
     
-The main differents from this two snippets is splitting the validation part and main logic part.
-Right now, we have two independents parts of code.
+The main difference from these two snippets is to split the validation part and main logic part. Right now, we have two independent parts of code.
 
 Let's consider more complex situation.
 
 We need to validate the users input by few conditions.
 
-We can do by this one:
+We can do like this:
 
     public class Credential {
         boolean hasAccess(final User login) {
@@ -409,8 +402,7 @@ We can do by this one:
         }
     }
     
-if we need to add more conditions, we should add more inner if else blocks.
-This code will be difficult to read and maintenance. 
+If we need to add more conditions, we should add more inner if-else blocks. This code will be difficult to read and maintenance. 
 
 Let's make the refactoring.
 
@@ -428,7 +420,7 @@ First, split the validations part and logic part.
     }
     return true;
 
-Then, we need to replace multiple if statements to dispatch pattern.
+Then, we need to replace multiple if-statements to dispatch pattern.
 
     private final List<Consumer<User>> validates = Arrays.asList(   
             login -> {
@@ -455,19 +447,13 @@ Then, we need to replace multiple if statements to dispatch pattern.
 
  ### 4. Don't use exceptions. Exceptions make your code ugly.
 
-Frequently, my students ask me question about exception. Why do we need it or how to use it?
-If you asked me such question, before I have written about this principle I would tell you follows:
-Exception is used when you need to notify clients about unordinary situation in code. 
-Generally, We just rethrow this exception or print it to console. We don't try to handle it.
+Frequently, my students ask me questions about exception. Why do we need it or how to use it? If you asked me such questions, before I wrote about this principle I would tell you follows: Exception is used when you need to notify clients about unusual situation in code. Generally, we just rethrow this exception or print it to console. We don't try to handle it.
 
-If we had had such behavior in real life it would be ridiculous. Let's consider you need a taxi. 
-When the taxi comes, a driver tells you that you need to take repair tools, 
-because a car may break on road and you have to fix it. It is the same situation, 
-when you use code, which throw exceptions.
+If we had had such behavior in real life it would be ridiculous. Let's consider you need a taxi. When the taxi comes, a driver tells you that you need to take repair tools, because a car may break on road and you have to fix it. It is the same situation, when you use code which throws exceptions. 
 
 Now I would like to propagate a new idea about exception.
 
-Let's consider the follow common interface.
+Let's consider the following common interface.
  
      public interface ExtResource<T> {
      
@@ -476,10 +462,7 @@ Let's consider the follow common interface.
          void write(T value) throws Exception;
      } 
   
-Such interface allows you to read and write a resource to external system. 
-Each method may throw exception and you need to handle it.
-We use try-catch statements for handling exception. 
-Such code start to look ugly.
+Such interface allows you to read and write a resource to external system. Each method may throw exception and you need to handle it. We use try-catch statements for handling exception. To my mind, such code looks ugly.
 
     public void writeToFile(T value, ExtResource<T> resource) {
         try {
@@ -502,18 +485,18 @@ This is a primitive sample. Look at more real example:
         }
     }
     
-You start to make you code in copy-past style.
+You start making you code in copy-past style.
 
-My idea is to get rid of any exceptions by lambla expression.
+My idea is to get rid of any exceptions using lambla expression instead.
 
-Let's create function interface with can do unary operation.
+Let's create function interface with an unary operation.
 
     public interface UnaryEx {
        
         void action() throws Exception;
     }
 
-Now we need to create method, which catch exception and print it to console. 
+Now we need to create a method which catches exception and prints it to console.
 
     void ex(UnaryEx unary) {
         try {
@@ -543,9 +526,9 @@ Now, we can rewrite about code without try-catch statement.
         ex(() -> resource.write(value));
     }
     
-How you can see, we don't have copy/past code now. 
+Now you can see, we don't have copy-past code. 
 
-Look at sample with JDBC method.
+Look at the sample with JDBC method.
 
     public void update(User model) {
         this.db(
