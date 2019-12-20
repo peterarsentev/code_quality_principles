@@ -406,7 +406,7 @@ If we need to add more conditions, we should add more inner if-else blocks. This
 
 Let's make the refactoring.
 
-First, split the validations part and logic part.
+First, we need to split the validation and logic parts.
 
     boolean hasAccess(final User login) {
     if (!this.checkName(login)) {
