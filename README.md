@@ -22,6 +22,8 @@ Content
 1. Multiple return statements
 2. Multiple if statements and switch anti-pattern
 3. If-else-throw statements
+4. Don't use exceptions. Exceptions make look your code ugly.
+5. Check-then-act statements
 
 #### 1. Multiple return statements
 
@@ -453,7 +455,7 @@ Then, we need to replace multiple if statements to dispatch pattern.
         return true;
     }
 
- ### 4. Don't use exceptions. Exceptions make your code ugly.
+ ### 4. Don't use exceptions. Exceptions make look your code ugly.
 
 Frequently, my students ask me question about exception. Why do we need it or how to use it?
 If you asked me such question, before I have written about this principle I would tell you follows:
@@ -558,3 +560,65 @@ Look at sample with JDBC method.
     }
 
 This code is clean and clear.    
+
+ ### 5. Check-and-act statements.
+ 
+ Let's consider situation, when we try to find a element in collection then do somethings with it.
+ 
+     public void addUser(User user) {
+         if (!users.containsKey(user)) {
+             users.putIfAbsent(user, new ArrayList<>());
+         }
+     }
+ 
+     public Account findByRequisite(String passport, String requisite) {
+         User user = findByPassport(passport);
+         if (user != null) {
+             for (Account account : users.get(user)) {
+                 if (account.getRequisite().equals(requisite)) {
+                     return account;
+                 }
+             }
+         }
+         return null;
+     }
+ 
+In this situation, we must check that an element is not null then do an action.
+I can describe by a template
+    
+    Element el = find(...);
+    if (el != null) { 
+        // do an action with the element.
+    }
+   
+Any condition statements decrease readability of you code.
+
+I offer replace such construction check-then-act to two party: check-throw and act.
+
+Let's look how I refactored it.
+
+Situation with void method.
+
+    public void addUser(User user) {
+        if (users.containsKey(user)) {
+            return;
+        }
+        users.put(user, new ArrayList<>());
+    }
+   
+Situation with not-void method.
+
+    public Account findByRequisite(String passport, String requisite) {
+        User user = findByPassport(passport);
+        if (user == null) {
+            return null;
+        }
+        Account rsl = null;
+        for (Account account : users.get(user)) {
+            if (account.getRequisite().equals(requisite)) {
+                rsl = account;
+                break;
+            }
+        }
+        return rsl;
+    }
