@@ -563,7 +563,7 @@ This code is clean and clear.
 
  ### 5. Check-and-act statements.
  
- Let's consider situation, when we try to find a element in collection then do somethings with it.
+ Let's consider a situation, when we try to find an element in a collection then do somethings with it.
  
      public void addUser(User user) {
          if (!users.containsKey(user)) {
@@ -583,21 +583,21 @@ This code is clean and clear.
          return null;
      }
  
-In this situation, we must check that an element is not null then do an action.
-I can describe by a template
+In this situation, we must check out that the element is not null then do an action.
+I can describe it by a template
     
     Element el = find(...);
     if (el != null) { 
         // do an action with the element.
     }
    
-Any condition statements decrease readability of you code.
+Any condition statements decrease readability of your code.
 
-I offer replace such construction check-then-act to two party: check-throw and act.
+I offer replace such check-then-act construction to two party: check-throw and act.
 
-Let's look how I refactored it.
+Let's look at on how I refactored it.
 
-Situation with void method.
+First, the situation with a void method.
 
     public void addUser(User user) {
         if (users.containsKey(user)) {
@@ -606,7 +606,7 @@ Situation with void method.
         users.put(user, new ArrayList<>());
     }
    
-Situation with not-void method.
+Next, the situation with a non void method.
 
     public Account findByRequisite(String passport, String requisite) {
         User user = findByPassport(passport);
