@@ -622,3 +622,79 @@ Situation with not-void method.
         }
         return rsl;
     }
+ 
+### How to handle null?
+
+1.	return null.
+
+    public User findByPassport(String passport) {
+        for (User user : users.keySet()) {
+            if (user.getPassport().equals(passport)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+Simple and obvious. Not safe for client.
+
+2.	Throw checked-exception
+
+    public User findByPassportIfNullThrow(String passport) throws NotFoundUserException {
+        for (User user : users.keySet()) {
+            if (user.getPassport().equals(passport)) {
+                return user;
+            }
+        }
+        throw new NotFoundUserException("User with passport " + passport + "not found");
+    }
+
+Simple and obvious. Overcoding in client side.
+
+    try {
+        var user = bank.findByPassportIfNullThrow("123");
+        System.out.println(user.getUsername());
+    } catch (NotFoundUserException e) {
+        System.out.println("User not found.");
+    }
+
+4.	Throw Runtime-exception.
+
+    public User findByPassportIfNullRuntime(String passport) {
+        for (User user : users.keySet()) {
+            if (user.getPassport().equals(passport)) {
+                return user;
+            }
+        }
+        throw new NullPointerException("User with passport " + passport + "not found");
+    }
+
+Simple and obvious. Not safe for client.
+
+5.	Use Optional.
+
+    public Optional<User> findByPassportIfNullOptional(String passport) {
+        for (User user : users.keySet()) {
+            if (user.getPassport().equals(passport)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
+    }
+
+Best choice. Lack in performance.
+
+6.	Annotation @Nullable
+
+    @Nullable
+    public User findByPassportCheckByCompile(String passport) {
+        for (User user : users.keySet()) {
+            if (user.getPassport().equals(passport)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+Elegant. Overconfig needed. 
+
