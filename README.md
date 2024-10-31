@@ -609,7 +609,7 @@ Situation with not-void method.
 ### How to handle null?
 
 1.	return null.
-
+    ```java
     public User findByPassport(String passport) {
         for (User user : users.keySet()) {
             if (user.getPassport().equals(passport)) {
@@ -618,11 +618,11 @@ Situation with not-void method.
         }
         return null;
     }
-
+    ```
 Simple and obvious. Not safe for client.
 
 2.	Throw checked-exception
-
+    ```java
     public User findByPassportIfNullThrow(String passport) throws NotFoundUserException {
         for (User user : users.keySet()) {
             if (user.getPassport().equals(passport)) {
@@ -631,18 +631,18 @@ Simple and obvious. Not safe for client.
         }
         throw new NotFoundUserException("User with passport " + passport + "not found");
     }
-
+    ```
 Simple and obvious. Overcoding in client side.
-
+    ```java
     try {
         var user = bank.findByPassportIfNullThrow("123");
         System.out.println(user.getUsername());
     } catch (NotFoundUserException e) {
         System.out.println("User not found.");
     }
-
+    ```
 4.	Throw Runtime-exception.
-
+    ```java
     public User findByPassportIfNullRuntime(String passport) {
         for (User user : users.keySet()) {
             if (user.getPassport().equals(passport)) {
@@ -651,11 +651,11 @@ Simple and obvious. Overcoding in client side.
         }
         throw new NullPointerException("User with passport " + passport + "not found");
     }
-
+    ```
 Simple and obvious. Not safe for client.
 
 5.	Use Optional.
-
+    ```java
     public Optional<User> findByPassportIfNullOptional(String passport) {
         for (User user : users.keySet()) {
             if (user.getPassport().equals(passport)) {
@@ -664,11 +664,11 @@ Simple and obvious. Not safe for client.
         }
         return Optional.empty();
     }
-
+    ```
 Best choice. Lack in performance.
 
 6.	Annotation @Nullable
-
+    ```java
     @Nullable
     public User findByPassportCheckByCompile(String passport) {
         for (User user : users.keySet()) {
@@ -678,6 +678,6 @@ Best choice. Lack in performance.
         }
         return null;
     }
-
+    ```
 Elegant. Overconfig needed. 
 
